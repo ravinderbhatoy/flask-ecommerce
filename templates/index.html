@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Our Products</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in products %}
+    <div class="col">
+        <div class="card product-card">
+            <img src="{{ url_for('static', filename='images/' + product[4]) }}" 
+                 class="card-img-top product-image" 
+                 alt="{{ product[1] }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ product[1] }}</h5>
+                <p class="card-text">{{ product[2] }}</p>
+                <p class="card-text"><strong>${{ "%.2f"|format(product[3]) }}</strong></p>
+                {% if 'user_id' in session %}
+                <form action="{{ url_for('add_to_cart', product_id=product[0]) }}" method="POST">
+                    {{ csrf_token() if csrf_token else '' }}
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-secondary">Login to Purchase</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
